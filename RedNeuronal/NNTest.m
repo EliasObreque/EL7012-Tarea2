@@ -3,39 +3,23 @@ clear all
 close all
 
 %------------Generar Datos del modelo------------
-Nd = 6000;         %Número de datos
 
-fmin = 0.2;        %frecuencia mínima
-fmax = 1;         %frecuencia máxima
-Ts   = 0.01;      %Tiempo de muestreo
-a    = -1;        %[a b] Amplitud de la señal
-b    = 1;
-gain_aprbs = 4;
+loaded_data = load('DataEstanque.mat');
 
-num_regresor_y = 2;
-num_regresor_u = 1;
-num_regresor = num_regresor_y  + num_regresor_u;
-
-loaded_data = load('P_DatosProblema1.mat');
-
-y_model = loaded_data.y;
-aprbs = loaded_data.u;
+salida_model = loaded_data.Salida;
+u_model = loaded_data.Entrada;
+ref_model = loaded_data.Ref;
+tiempo_model = loaded_data.Tiempo;
 
 figure ()
-stairs(y_model)
 hold on
-stairs(aprbs)
-% stairs(e)
-xlim([1 90])
+plot(salida_model)
+plot(u_model)
+grid on
+xlim([0 7000])
 xlabel('Número de muestras')
-ylabel('Amplitud')
-legend('y(k)', 'u(k)')
-title('Serie no lineal dinámica')
-
-% Contrucción del vector de datos con Nd datos ajustable
-% X: y(k-1), ..., y(k-ry), u(k - 1), ..., u(k - ru)
-ry = num_regresor_y;
-ru = num_regresor_u;
+ylabel('Salida del modelo')
+legend('h(k)', 'u(k)')
 
 x_train = loaded_data.Xent;
 y_train = loaded_data.Yent;
