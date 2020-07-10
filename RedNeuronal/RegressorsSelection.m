@@ -1,5 +1,5 @@
 function [best_auto_reg, best_reg, best_X, best_Y] = RegressorsSelection(num_auto_reg,...
-    num_reg, y_m, u_m, range_y_m, range_u_m, num_neu)
+    num_reg, y_m, u_m, range_y_m, range_u_m, num_neu, normalize)
 
 global train_prc test_prc val_prc
 
@@ -22,9 +22,9 @@ for reg_y = min_auto_reg:max_auto_reg
     for reg_u = min_reg:max_reg
         total_data = length(y_m);
         Dt = floor(total_data/reg_y);
-        [X, Y] = createMatrixInput(Dt, reg_y, reg_u, y_m, u_m, range_y_m, range_u_m);
+        [X, Y] = createMatrixInput(Dt, reg_y, reg_u, y_m, u_m, range_y_m, range_u_m, normalize);
         
-        [trainInd,valInd,testInd] = divideblock(Dt, train_prc, val_prc, test_prc);
+        [trainInd, testInd, valInd] = divideblock(Dt, train_prc, test_prc, val_prc);
         
         x_train = X(trainInd, :);
         y_train = Y(trainInd);
@@ -66,7 +66,11 @@ for reg_y = min_auto_reg:max_auto_reg
         end
     end
 end
-save('best_regressor.mat','best_train_rmse','best_auto_reg', 'best_reg',...
+best_regressor_mat = 'best_regressor.mat';
+if normalize == 1
+   best_regressor_mat = sprintf('%s%s%s', 'best_regressor','_normalized','.mat');
+end
+save(best_regressor_mat,'best_train_rmse','best_auto_reg', 'best_reg',...
     'num_neu', 'best_Y', 'best_X')
 end
 

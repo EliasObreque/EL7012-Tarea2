@@ -1,5 +1,5 @@
 function [best_hidden_neurons] = Identification(best_auto_reg, best_reg, x_train, y_train, x_test,...
-        y_test, x_val, y_val, num_neu)
+        y_test, x_val, y_val, num_neu, normalize)
 % Elias Obreque
 % els.obrq@gmail.com
 
@@ -99,5 +99,10 @@ plotperform(tr)
 % Plot training state values
 figure()
 plottrainstate(tr)
-save('best_hidden_neurons.mat', 'best_hidden_neurons')
+
+best_hidden_neurons_mat = 'best_hidden_neurons.mat';
+if normalize == 1
+   best_hidden_neurons_mat = sprintf('%s%s%s', 'best_hidden_neurons','_normalized','.mat');
+end
+save(best_hidden_neurons_mat, 'best_hidden_neurons')
 return

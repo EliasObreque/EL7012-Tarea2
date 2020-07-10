@@ -1,4 +1,4 @@
-function [X, Y] = createMatrixInput(Dt, ry, ru, y_model, u, range_y_m, range_u_m)
+function [X, Y] = createMatrixInput(Dt, ry, ru, y_model, u, range_y_m, range_u_m, normalize)
 %CREATEMATRIXINPUT Summary of this function goes here
 %------------Contrucción del vector de datos
 min_amp_y_m = range_y_m(1);
@@ -11,6 +11,11 @@ g_lower = y_model(y_model>min_amp_y_m);
 u_lower = u(y_model>min_amp_y_m);
 new_y_m = g_lower(g_lower<max_amp_y_m);
 new_u   = u_lower(g_lower<max_amp_y_m);
+if normalize == 1
+    new_y_m = new_y_m/max_amp_y_m;
+    new_u = new_u/max_amp_u_m;
+end
+
 
 f  = length(new_y_m);
 Y  = zeros(Dt,1);

@@ -14,12 +14,24 @@ u_m = loaded_data.Entrada;
 ref_m = loaded_data.Ref;
 time_m = loaded_data.Tiempo;
 
+normalize = 1;
+best_regressor_mat = 'best_regressor.mat';
+best_hidden_neurons_mat = 'best_hidden_neurons.mat';
+
+if normalize == 1
+   best_regressor_mat = sprintf('%s%s%s', 'best_regressor','_normalized','.mat');
+   best_hidden_neurons_mat = sprintf('%s%s%s', 'best_hidden_neurons','_normalized','.mat');
+end
+
+
+[y_m, u_m, ref_m, time_m] = MuestreoConstante(y_m, u_m, ref_m, time_m);
+
 figure ()
 hold on
 plot(y_m)
 plot(u_m)
 grid on
-xlim([0 7000])
+xlim([0 2000])
 xlabel('Número de muestras')
 ylabel('Salida del modelo')
 legend('h(k)', 'u(k)')
@@ -40,11 +52,12 @@ test_prc = 0.2;
 val_prc = 0.2;
 
 %% Regressors Selection
-if exist('best_regressor.mat', 'file') == 0
+
+if exist(best_regressor_mat, 'file') == 0
     [best_auto_reg, best_reg, best_X, best_Y] = RegressorsSelection(num_auto_reg,...
-        num_reg, y_m, u_m, range_y_m, range_u_m, num_neurons);
+        num_reg, y_m, u_m, range_y_m, range_u_m, num_neurons, normalize);
 else
-    load('best_regressor.mat')
+    load(best_regressor_mat)
 end
 
 x_train = best_X.x_train;
@@ -58,19 +71,20 @@ y_val = best_Y.y_val;
 clear best_X best_Y num_neu best_train_rmse
 
 %% Optimal hidden neurons
-if exist('best_hidden_neurons.mat', 'file')==0
-[best_hidden_neurons] = Identification(best_auto_reg, best_reg, x_train, y_train, x_test,...
-        y_test, x_val, y_val, num_neurons);
+if exist(best_hidden_neurons_mat, 'file')==0
+    [best_hidden_neurons] = Identification(best_auto_reg, best_reg, x_train, y_train, x_test,...
+        y_test, x_val, y_val, num_neurons, normalize);
 else
-    load('best_hidden_neurons.mat')
+    load(best_hidden_neurons_mat)
 end
 NUM_OPT_NEU = best_hidden_neurons;
 
-% NEURALNETWORK
+%% NEURALNETWORK
 [net_trained, tr] = NeuralNetwork(NUM_OPT_NEU, x_train, y_train, x_test, y_test, x_val, y_val);
 
-% Sensitivity analysis
-I = SensitivityCalc('tanh', num_regresor, x_test, net_trained);
+
+%% Sensitivity analysis
+I = SensitivityCalc('tanh', best_auto_reg + best_reg, x_test, net_trained);
 regressors_name = cell(1, best_auto_reg + best_reg);
 y_k = 'y(k-';
 y_fi = ')';
@@ -88,7 +102,7 @@ grid on
 xlabel('Regresors')
 bar(I)
 ylabel(join(['I - ', num2str(NUM_OPT_NEU), ' nn']))
-set(gca(fig_i), 'XTick', [1:3], 'xticklabel', regressors_name);
+set(gca(fig_i), 'XTick', [1:best_auto_reg + best_reg], 'xticklabel', regressors_name);
 
 %%
 y_train_nn = net_trained(x_train');
@@ -141,9 +155,23 @@ grid on
 ylabel('y(k)')
 xlabel('Número de muestras')
 stairs(y_val)
-xlim([1 200])
 legend('NN-Validación', 'Dato Real')
 
+figure()
+stairs(y_test_nn)
+hold on
+grid on
+ylabel('y(k)')
+xlabel('Número de muestras')
+stairs(y_test)
+legend('NN-Prueba', 'Dato Real')
 
-
+figure()
+stairs(y_train_nn)
+hold on
+grid on
+ylabel('y(k)')
+xlabel('Número de muestras')
+stairs(y_train)
+legend('NN-Entrenamiento', 'Dato Real')
 
