@@ -1,6 +1,5 @@
 % Elias Obreque
 % els.obrq@gmail.com
-
 clc
 clear all
 close all
@@ -14,15 +13,17 @@ u_m = loaded_data.Entrada;
 ref_m = loaded_data.Ref;
 time_m = loaded_data.Tiempo;
 
-normalize = 1;
+normalize = 0;
+
 best_regressor_mat = 'best_regressor.mat';
 best_hidden_neurons_mat = 'best_hidden_neurons.mat';
+NN_model_mat = 'NN_model.mat';
 
 if normalize == 1
    best_regressor_mat = sprintf('%s%s%s', 'best_regressor','_normalized','.mat');
    best_hidden_neurons_mat = sprintf('%s%s%s', 'best_hidden_neurons','_normalized','.mat');
+   NN_model_mat = sprintf('%s%s%s', 'NN_model','_normalized','.mat');
 end
-
 
 [y_m, u_m, ref_m, time_m] = MuestreoConstante(y_m, u_m, ref_m, time_m);
 
@@ -80,8 +81,9 @@ end
 NUM_OPT_NEU = best_hidden_neurons;
 
 %% NEURALNETWORK
-[net_trained, tr] = NeuralNetwork(NUM_OPT_NEU, x_train, y_train, x_test, y_test, x_val, y_val);
 
+[net_trained, tr] = NeuralNetwork(NUM_OPT_NEU, x_train, y_train, x_test, y_test, x_val, y_val);
+save(NN_model_mat, 'net_trained', 'tr')
 
 %% Sensitivity analysis
 I = SensitivityCalc('tanh', best_auto_reg + best_reg, x_test, net_trained);
@@ -113,7 +115,6 @@ error_train = y_train - y_train_nn';
 error_test  = y_test - y_test_nn';
 error_val   = y_val- y_val_nn';
 
-
 figure()
 grid on
 hold on
@@ -126,15 +127,12 @@ legend('train','test','val')
 rmse_train = RMSE(y_train, y_train_nn')
 rmse_test = RMSE(y_test, y_test_nn')
 rmse_val = RMSE(y_val, y_val_nn')
-
 mse_train = MSE(y_train, y_train_nn')
 mse_test = MSE(y_test, y_test_nn')
 mse_val = MSE(y_val, y_val_nn')
-
 mae_train = MAE(y_train, y_train_nn')
 mae_test = MAE(y_test, y_test_nn')
 mae_val = MAE(y_val, y_val_nn')
-
 mape_train = MAPE(y_train, y_train_nn')
 mape_test = MAPE(y_test, y_test_nn')
 mape_val = MAPE(y_val, y_val_nn')
@@ -148,6 +146,8 @@ ploterrhist(error_train,'Train', error_test, 'Test', error_val, 'Validation')
 figure()
 plotperform(tr)
 
+
+%%
 figure()
 stairs(y_val_nn)
 hold on
