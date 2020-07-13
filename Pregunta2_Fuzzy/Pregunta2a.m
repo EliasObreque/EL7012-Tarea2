@@ -3,6 +3,7 @@ t = cputime;
 tescalon=180;
 tsim=tescalon*6;
 sim('SimEstanque2a',tsim)
+clear('Xdatos');
 
 e=RMSE(h(:,1),h(:,2))
 
