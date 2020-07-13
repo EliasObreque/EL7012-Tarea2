@@ -1,3 +1,4 @@
+clear all, clc
 t = cputime;
 tescalon=180;
 tsim=tescalon*6;
