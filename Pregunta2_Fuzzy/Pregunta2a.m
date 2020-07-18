@@ -1,9 +1,10 @@
 clear all, clc
+delete Xdatos.mat
 t = cputime;
 tescalon=180;
-tsim=tescalon*6;
+tsim=tescalon*5;
 sim('SimEstanque2a',tsim)
-delete Xdatos.mat
+
 
 e=RMSE(h(:,1),h(:,2))
 
