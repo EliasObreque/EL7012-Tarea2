@@ -81,10 +81,12 @@ end
 NUM_OPT_NEU = best_hidden_neurons;
 
 %% NEURALNETWORK
-
-[net_trained, tr] = NeuralNetwork(NUM_OPT_NEU, x_train, y_train, x_test, y_test, x_val, y_val);
-save(NN_model_mat, 'net_trained', 'tr')
-
+if exist(best_hidden_neurons_mat, 'file')==0
+    [net_trained, tr] = NeuralNetwork(NUM_OPT_NEU, x_train, y_train, x_test, y_test, x_val, y_val);
+    save(NN_model_mat, 'net_trained', 'tr')
+else
+    load(NN_model_mat)
+end
 %% Sensitivity analysis
 I = SensitivityCalc('tanh', best_auto_reg + best_reg, x_test, net_trained);
 regressors_name = cell(1, best_auto_reg + best_reg);
