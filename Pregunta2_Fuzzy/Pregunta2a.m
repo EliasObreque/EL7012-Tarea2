@@ -2,7 +2,7 @@ clear all, clc
 delete Xdatos.mat
 t = cputime;
 tescalon=180;
-tsim=tescalon*6;
+tsim=tescalon*5;
 sim('SimEstanque2a',tsim)
 
 

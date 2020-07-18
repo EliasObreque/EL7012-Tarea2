@@ -1,9 +1,9 @@
 function [u] = ControladorOptEuler(r,h,f)
 tm=10;
 A=2;
-B=0.01;
-N=6;
-M=2; %Se debe cumplir M<=N
+B=0.001;
+N=1;
+M=1; %Se debe cumplir M<=N
 
 %Optimización
 lb=zeros(1,M+1);
