@@ -30,7 +30,7 @@ fprintf('Tiempo de simulación: %f0.1 \n', t2-t1)
 fprintf('Tiempo de cálculo promedio: %f0.1 \n', time_prom/counter_time)
 %%
 
-e = RMSE(h(:,1),h(:,2))
+e = RMSE(h(:,1), h(:,2))
 
 figure ()
 subplot(2,1,1), plot (tout,h(:,1))

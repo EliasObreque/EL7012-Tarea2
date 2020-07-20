@@ -46,11 +46,11 @@ else
     %F = fmincon(fun,x0,[],[],[],[],lb,ub,[],options);
     %% PSO
     %options = optimoptions('particleswarm','SwarmSize',20,'MaxIterations', 10);
-    %options = optimoptions('particleswarm','SwarmSize',20,'MaxIterations', 30);
+    %options = optimoptions('particleswarm','SwarmSize',20,'MaxIterations', 5);
     %[F,fval,exitflag,output]= particleswarm(fun, nvars, lb, ub,options);
      %% GA
-    options = optimoptions('ga','PopulationSize',20,'MaxGenerations', 10);
-    %options = optimoptions('ga','PopulationSize',40,'MaxGenerations', 30);
+    %options = optimoptions('ga','PopulationSize',20,'MaxGenerations', 10);
+    options = optimoptions('ga','PopulationSize',20,'MaxGenerations', 5);
     [F,fval,exitflag,output,population,scores] = ga(fun,nvars,[],[],[],[],lb,ub,[],[],options);
 
     u=F(1);
