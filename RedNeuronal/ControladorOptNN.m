@@ -1,10 +1,10 @@
-function [u] = ControladorOptDifuso(r,h,f)
+function [u] = ControladorOptNN(r,h,f)
 global reg_count best_auto_reg best_reg net_trained counter_time time_prom
 tm=10;
 A=2;
 B=0.001;
-N=5;
-M=5; %Se debe cumplir M<=N
+N=1;
+M=1; %Se debe cumplir M<=N
 
 % Modelo neuronal
 ny = best_auto_reg;
@@ -41,17 +41,17 @@ else
     fun = @(x)myfunMNN(x,r,h,f,tm,A,B,N,M, modelo, Xdatos,ny,nu);
 
     %% Algoritmo de Optimización Convencional
-    %x0=zeros(1,nvars);
-    %options = optimoptions(@fmincon,'Display','off','MaxIterations',100,'StepTolerance',1e-3,'OptimalityTolerance',1e-3);
-    %F = fmincon(fun,x0,[],[],[],[],lb,ub,[],options);
+    x0=zeros(1,nvars);
+    options = optimoptions(@fmincon,'Display','off','MaxIterations',100,'StepTolerance',1e-3,'OptimalityTolerance',1e-3);
+    F = fmincon(fun,x0,[],[],[],[],lb,ub,[],options);
     %% PSO
     %options = optimoptions('particleswarm','SwarmSize',20,'MaxIterations', 10);
     %options = optimoptions('particleswarm','SwarmSize',20,'MaxIterations', 5);
     %[F,fval,exitflag,output]= particleswarm(fun, nvars, lb, ub,options);
      %% GA
     %options = optimoptions('ga','PopulationSize',20,'MaxGenerations', 10);
-    options = optimoptions('ga','PopulationSize',20,'MaxGenerations', 5);
-    [F,fval,exitflag,output,population,scores] = ga(fun,nvars,[],[],[],[],lb,ub,[],[],options);
+    %options = optimoptions('ga','PopulationSize',20,'MaxGenerations', 5);
+    %[F,fval,exitflag,output,population,scores] = ga(fun,nvars,[],[],[],[],lb,ub,[],[],options);
 
     u=F(1);
     tout = cputime;
